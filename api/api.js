@@ -20,10 +20,10 @@ db.serialize(function () {
       VALUES (?, ?, ?, ?, date('now'), 1)`,
       c, d, a, desc)
 
-  createTrans('위재원', '김유진', 1000)
-  createTrans('강명진', '김유진', -2000)
-  createTrans('김유진', '위재원', 1500)
-  createTrans('김유진', '이정재', 4500)
+  createTrans('위재원', '김유진', 1000, '데리야끼 호텔')
+  createTrans('강명진', '김유진', -2000, '성실관 콜라')
+  createTrans('강명진', '위재원', 8500, '마쯔미')
+  createTrans('강명진', '이정재', 4500, '싸이')
 })
 
 api.route('/api/trans')

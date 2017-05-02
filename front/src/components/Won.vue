@@ -8,17 +8,22 @@
           class="is-overlay is-success"></notification>
         <notification
           v-if="required"
-          message="실명과 금액을 입력하세요"
+          message="필요한 항목을 모두 채워주세요"
           class="is-overlay is-danger"></notification>
       </transition>
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label"> 채권자 </label>
+          <label class="label"> 빌려준 사람 </label>
         </div>
         <div class="field-body">
           <div class="field">
             <p class="control has-icons-left">
-              <input v-model.trim="creditor" class="input" type="text" placeholder="채권자 이름" required>
+              <span class="select">
+                <select v-model="creditor" class="input" required>
+                  <option value="" disabled selected> 채권자 </option>
+                  <option v-for="person in people"> {{ person }} </option>
+                </select>
+              </span>
               <span class="icon is-small is-left">
                 <i class="fa fa-user"></i>
               </span>
@@ -30,12 +35,17 @@
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label"> 채무자 </label>
+          <label class="label"> 빌린 사람 </label>
         </div>
         <div class="field-body">
           <div class="field">
             <p class="control has-icons-left">
-              <input v-model.trim="debtor" class="input" type="text" placeholder="채무자 이름" required>
+              <span class="select">
+                <select v-model="debtor" class="input" required>
+                  <option value="" disabled selected> 채무자 </option>
+                  <option v-for="person in people"> {{ person }} </option>
+                </select>
+              </span>
               <span class="icon is-small is-left">
                 <i class="fa fa-user"></i>
               </span>
@@ -51,7 +61,13 @@
         <div class="field-body">
           <div class="field">
             <p class="control has-icons-left">
-              <input v-model.number="amount" class="input" type="number" placeholder="빌려준 돈의 양" required>
+              <input v-model.number="amount"
+                class="input"
+                step="1000"
+                type="number"
+                placeholder="빌려준 돈의 양"
+                style="width:50%"
+                required>
               <span class="icon is-small is-left">
                 <i class="fa fa-money"></i>
               </span>
@@ -105,6 +121,7 @@ var Notification = {
 
 export default {
   name: 'won',
+  props: ['people'],
   data: function () {
     return {
       creditor: '',
@@ -125,9 +142,8 @@ export default {
       }
       let state = this
 
-      var people = new RegExp(/(김유진|위재원|이정재|강명진)/)
-      if (!people.test(data.creditor) ||
-        !people.test(data.debtor) ||
+      if (!this.people.includes(data.creditor) ||
+        !this.people.includes(data.debtor) ||
         !Number.isInteger(data.amount)) {
         state.required = true
         setTimeout(() => {
