@@ -9,11 +9,15 @@
         </span>
       </p>
       <p class="control">
-        <a class="button is-primary">
-          의 채권
+        <a class="button is-primary" id="copy" :data-clipboard-text="JSON.stringify(creditList(name), null, 2)">
+          <span> 의 채권 </span>
+          <span class="icon is-small">
+            <i class="fa fa-copy"></i>
+          </span>
         </a>
       </p>
     </div>
+
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
         <table class="table is-striped">
@@ -45,6 +49,18 @@
 </template>
 
 <script>
+import Clipboard from 'clipboard'
+
+const cp = new Clipboard('#copy')
+
+cp.on('success', function (e) {
+  console.info('Action:', e.action)
+  console.info('Text:', e.text)
+  console.info('Trigger:', e.trigger)
+
+  e.clearSelection()
+})
+
 export default {
   name: 'list',
   props: ['people'],
