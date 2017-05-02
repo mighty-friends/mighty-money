@@ -4,12 +4,13 @@
       <p class="control">
         <span class="select">
           <select v-model="name">
+            <option value="모두"> 모두 </option>
             <option v-for="person in people"> {{ person }} </option>
           </select>
         </span>
       </p>
       <p class="control">
-        <a class="button is-primary" id="copy" :data-clipboard-text="JSON.stringify(creditList(name), null, 2)">
+        <a class="button is-primary" id="copy">
           <span> 의 채권 </span>
           <span class="icon is-small">
             <i class="fa fa-copy"></i>
@@ -20,11 +21,29 @@
 
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
-        <table class="table is-striped">
+        <table v-if="name === '모두'" class="table is-striped">
+          <thead>
+            <tr>
+              <th> 채권자 <th>
+              <th> 채무자 </th>
+              <th colspan="2" style="text-align:right"> 채권액 </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="e in this.credit"
+                v-if="e.amount > 0"
+                class="is-credit">
+              <td> {{ e.creditor }} </td>
+              <td> {{ e.debtor }} </td>
+              <td class="amount" colspan="2" style="text-align:right"> {{ e.amount | formatAmount }} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table is-striped" v-else>
           <thead>
             <tr>
               <th> 사람 </th>
-              <th style="text-align:right"> 채권 </th>
+              <th style="text-align:right"> 채권액 </th>
             </tr>
           </thead>
           <tfoot>
@@ -36,10 +55,13 @@
             </tr>
           </tfoot>
           <tbody>
-            <tr v-if="credit!=0" v-for="(credit, name) in creditList(name)"
-              :class="{'is-credit':credit>0, 'is-debt':credit<0}">
-              <td> {{ name }} </td>
-              <td class="amount has-text-right"> {{ credit | formatAmount }} </td>
+            <tr v-for="e in this.credit"
+                v-if="e.creditor === name & e.amount != 0"
+                :class="{
+                  'is-credit': e.amount > 0,
+                  'is-debt': e.amount < 0}">
+              <td> {{ e.debtor }} </td>
+              <td class="amount" style="text-align:right"> {{ e.amount | formatAmount }} </td>
             </tr>
           </tbody>
         </table>
@@ -66,68 +88,28 @@ export default {
   props: ['people'],
   data: function () {
     return {
-      trans: [],
-      name: '김유진' // ::ISSUE:: Where to get default value
+      credit: [],
+      name: '모두' // ::ISSUE:: Where to get default value
     }
   },
 
   methods: {
     sumAmount: function (name) {
-      let credit = this.trans
-        .filter(e => e.creditor === name && e.valid === 1)
+      let amount = this.credit
+        .filter(e => e.creditor === name)
         .reduce((prev, curr) => {
           if (prev) return prev + curr.amount
           else return curr.amount
         }, 0)
 
-      let debt = this.trans
-        .filter(e => e.debtor === name && e.valid === 1)
-        .reduce((prev, curr) => {
-          if (prev) return prev + curr.amount
-          else return curr.amount
-        }, 0)
-
-      return credit - debt
-    },
-    creditList: function (name) {
-      let creditl = {}
-      this.trans
-        .filter(e => e.creditor === name && e.valid === 1)
-        .filter(e => {
-          if (creditl[e.debtor]) {
-            creditl[e.debtor] += e.amount
-            return false
-          } else {
-            creditl[e.debtor] = e.amount
-            return true
-          }
-        })
-      let debtl = {}
-      this.trans
-        .filter(e => e.debtor === name && e.valid === 1)
-        .filter(e => {
-          if (debtl[e.creditor]) {
-            debtl[e.creditor] += e.amount
-            return false
-          } else {
-            debtl[e.creditor] = e.amount
-            return true
-          }
-        })
-
-      for (var person in debtl) {
-        if (creditl[person]) creditl[person] -= debtl[person]
-        else creditl[person] = -debtl[person]
-      }
-
-      return creditl
+      return amount
     }
   },
   beforeMount: function () {
     let l = this
-    this.$http.get('/api/trans')
+    this.$http.get('/api/credit')
       .then(function (response) {
-        l.trans = response.data
+        l.credit = response.data
       })
       .catch(function (error) {
         console.log(error)
