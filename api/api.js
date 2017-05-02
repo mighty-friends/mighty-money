@@ -83,4 +83,4 @@ api.put('/api/trans', function (req, res) {
 
 api.use(express.static('public'))
 api.listen(80)
-console.log('Submit GET or POST to http://localhost:3000')
+console.log('Submit GET or POST to http://localhost:80')
