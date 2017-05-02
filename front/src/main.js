@@ -26,7 +26,18 @@ const router = new VueRouter({
 })
 
 const app = new Vue({
-  router
+  router,
+  data: function () {
+    return {
+      people: [
+        '강명진', '김성주', '김시환', '김유진', '김현우',
+        '문민준', '서재현', '서표석', '선민규', '송영주',
+        '심유성', '양경모', '위재원', '윤효상', '이정재',
+        '조성준', '조장현', '최대범', '표성준', '한동규',
+        '한충훈'
+      ]
+    }
+  }
 })
 
 app.$mount('#app')

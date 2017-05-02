@@ -4,6 +4,7 @@
       <p class="control">
         <span class="select">
           <select v-model="name">
+            <option value="모두"> 모두 </option>
             <option v-for="person in people"> {{ person }} </option>
           </select>
         </span>
@@ -58,17 +59,11 @@
 <script>
 export default {
   name: 'list',
+  props: ['people'],
   data: function () {
     return {
       trans: [],
-      name: '모두', // ::ISSUE:: Where to get default value
-      people: [
-        '모두',
-        '김유진',
-        '위재원',
-        '이정재',
-        '강명진'
-      ]
+      name: '모두' // ::ISSUE:: Where to get default value
     }
   },
   methods: {

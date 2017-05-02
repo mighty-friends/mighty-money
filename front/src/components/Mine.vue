@@ -47,16 +47,11 @@
 <script>
 export default {
   name: 'list',
+  props: ['people'],
   data: function () {
     return {
       trans: [],
-      name: '김유진', // ::ISSUE:: Where to get default value
-      people: [
-        '김유진',
-        '위재원',
-        '이정재',
-        '강명진'
-      ]
+      name: '김유진' // ::ISSUE:: Where to get default value
     }
   },
 
