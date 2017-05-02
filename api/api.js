@@ -29,7 +29,8 @@ db.serialize(function () {
 api.route('/api/trans')
   .get(function (req, res) {
     db.all(
-      'SELECT * FROM liablity',
+      `SELECT * FROM liablity \
+      ORDER BY time DESC`,
       function (err, rows) {
         if (err) {
           console.log(err)
@@ -80,6 +81,32 @@ api.put('/api/trans', function (req, res) {
   )
 })
 */
+
+api.get('/api/credit', function(req, res){
+    db.all(
+		`SELECT creditor, debtor, sum(amount) as amount \
+    FROM \
+      (SELECT creditor, debtor, amount \
+      FROM liablity \
+      WHERE valid <> 0 \
+      UNION ALL \
+      SELECT debtor as creditor, creditor as debtor, -amount \
+      FROM liablity \
+      WHERE valid <> 0) \
+    GROUP BY creditor, debtor \
+    HAVING sum(amount) > 0 \
+    ORDER BY sum(amount)`,
+		function(err, rows){
+			if (err){
+				console.log(err);
+				res.status(500);
+				res.end();
+			}else{
+				res.send(rows)
+			}
+		}
+	);
+});
 
 api.use(express.static('public'))
 api.listen(80)
