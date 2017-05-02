@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="columns">
-    <form class="column is-half is-offset-one-quarter">
+    <div class="column is-half is-offset-one-quarter">
       <transition name="fade">
         <notification
           v-if="sent"
@@ -88,7 +88,7 @@
           </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
