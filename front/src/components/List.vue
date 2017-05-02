@@ -55,8 +55,8 @@
         <table class="table is-striped">
           <thead>
             <tr>
-              <th class="is-credit"> 채권 </th>
               <th> 사람 </th>
+              <th class="is-credit"> 채권 </th>
               <th class="is-debt"> 채무 </th>
             </tr>
           </thead>
@@ -69,9 +69,9 @@
           <tbody>
             <tr v-if="credit!=0" v-for="(credit, name) in creditList(name)"
               :class="{'is-credit':credit>0, 'is-debt':credit<0}">
+              <td> {{ name }} </td>
               <td class="amount" v-if="credit>0"> {{ credit }} </td>
               <td v-else></td>
-              <td> {{ name }} </td>
               <td class="amount" v-if="credit<0"> {{ -credit }}</td>
               <td v-else></td>
             </tr>

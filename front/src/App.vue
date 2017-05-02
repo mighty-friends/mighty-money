@@ -23,6 +23,12 @@
                   <span> 채무 </span>
                 </a>
               </li>
+              <li :class="{ 'is-active': isList }">
+                <a @click="view = 'list'">
+                  <span class="icon is-small"><i class="fa fa-list"></i></span>
+                  <span> 거래 내역 </span>
+                </a>
+              </li>
               <li :class="{ 'is-active': isWon }">
                 <a @click="view = 'won'">
                   <span class="icon is-small"><i class="fa fa-won"></i></span>
