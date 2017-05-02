@@ -67,7 +67,7 @@
             </tr>
           </tfoot>
           <tbody>
-            <tr v-for="(credit, name) in creditList(name)"
+            <tr v-if="credit!=0" v-for="(credit, name) in creditList(name)"
               :class="{'is-credit':credit>0, 'is-debt':credit<0}">
               <td class="amount" v-if="credit>0"> {{ credit }} </td>
               <td v-else></td>
