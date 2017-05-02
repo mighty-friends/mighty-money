@@ -14,6 +14,7 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 
 const routes = [
+  { path: '/', component: Won },
   { path: '/list', component: List },
   { path: '/mine', component: Mine },
   { path: '/won', component: Won }
