@@ -24,7 +24,7 @@
         <table v-if="name === '모두'" class="table is-striped">
           <thead>
             <tr>
-              <th> 채권자 <th>
+              <th> 채권자 </th>
               <th> 채무자 </th>
               <th colspan="2" style="text-align:right"> 채권액 </th>
             </tr>
