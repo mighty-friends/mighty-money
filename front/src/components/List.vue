@@ -19,11 +19,11 @@
         <table class="table is-striped" >
           <thead>
             <tr>
+              <th> 날짜 </th>
               <th> 채권자 </th>
               <th> 채무자 </th>
-              <th> 금액 </th>
-              <th> 날짜 </th>
               <th> 내역 </th>
+              <th style="text-align:right"> 금액 </th>
             </tr>
           </thead>
           <tfoot>
@@ -42,11 +42,11 @@
                   'invalid': !ts.valid,
                   'is-credit': ts.amount > 0,
                   'is-debt': ts.amount < 0}">
+              <td> {{ ts.time }} </td>
               <td> {{ ts.creditor }} </td>
               <td> {{ ts.debtor }} </td>
-              <td class="amount"> {{ ts.amount }} </td>
-              <td> {{ ts.time }} </td>
               <td> {{ ts.description }} </td>
+              <td class="amount" style="text-align:right"> {{ ts.amount | formatAmount }} </td>
             </tr>
           </tbody>
         </table>
@@ -88,6 +88,11 @@ export default {
         console.log(error)
         alert('인터넷 연결 상태가 좋지 않거나, 데이터베이스에 문제가 생겼습니다. 개발자에게 문의해주세요')
       })
+  },
+  filters: {
+    formatAmount: function (amount) {
+      return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원'
+    }
   }
 }
 </script>
