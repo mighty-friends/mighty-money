@@ -30,7 +30,7 @@ api.route('/api/trans')
   .get(function (req, res) {
     db.all(
       `SELECT * FROM liablity \
-      ORDER BY time DESC`,
+      ORDER BY id DESC`,
       function (err, rows) {
         if (err) {
           console.log(err)
@@ -94,7 +94,6 @@ api.get('/api/credit', function(req, res){
       FROM liablity \
       WHERE valid <> 0) \
     GROUP BY creditor, debtor \
-    HAVING sum(amount) > 0 \
     ORDER BY sum(amount)`,
 		function(err, rows){
 			if (err){
