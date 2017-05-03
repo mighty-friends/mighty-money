@@ -10,7 +10,7 @@
         </span>
       </p>
       <p class="control">
-        <a class="button is-primary" id="copy">
+        <a class="button is-primary" id="copy" :data-clipboard-text="creditList(name)">
           <span> 의 채권 </span>
           <span class="icon is-small">
             <i class="fa fa-copy"></i>
@@ -39,7 +39,7 @@
             </tr>
           </tbody>
         </table>
-        <table class="table is-striped" v-else>
+        <table v-else class="table is-striped">
           <thead>
             <tr>
               <th> 사람 </th>
@@ -49,9 +49,7 @@
           <tfoot>
             <tr>
               <th> 총계 </th>
-              <th style="text-align:right">
-                {{ sumAmount(name) | formatAmount }}
-              </th>
+              <th style="text-align:right"> {{ sumAmount(name) | formatAmount }} </th>
             </tr>
           </tfoot>
           <tbody>
@@ -103,6 +101,30 @@ export default {
         }, 0)
 
       return amount
+    },
+    creditList: function (name) {
+      let creditL
+      let format = function (amount) {
+        return ':  ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원\n'
+      }
+
+      if (name === '모두') {
+        creditL = this.credit
+          .filter(e => e.amount > 0)
+          .map(e => e.creditor + '<' + e.debtor + format(e.amount))
+      } else {
+        creditL = this.credit
+          .filter(e => e.creditor === name)
+          .map(e => e.debtor + format(e.amount))
+      }
+
+      let creditS = creditL
+        .reduce((prev, curr) => {
+          if (prev) return prev + curr
+          else return curr
+        }, '')
+
+      return creditS
     }
   },
   beforeMount: function () {

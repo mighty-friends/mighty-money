@@ -62,25 +62,24 @@ api.route('/api/trans')
       }
     )
   })
-
-/*
-api.put('/api/trans', function (req, res) {
-  db.run(
-    `UPDATE liablity SET valid = ? WHERE id = ?`,
-    req.query.valid, req.query.id,
-    function (err, row) {
-      if (err) {
-        console.log(err)
-        res.status(500)
-        res.end()
-      } else {
-        res.status(202)
-        res.end()
+  .put(function (req, res) {
+    db.run(
+      `UPDATE liablity \
+      SET valid = ? \
+      WHERE id = ?`,
+      req.query.valid, req.query.id,
+      function (err, row) {
+        if (err) {
+          console.log(err)
+          res.status(500)
+          res.end()
+        } else {
+          res.status(202)
+          res.end()
+        }
       }
-    }
-  )
-})
-*/
+    )
+  })
 
 api.get('/api/credit', function(req, res){
     db.all(
@@ -94,7 +93,8 @@ api.get('/api/credit', function(req, res){
       FROM liablity \
       WHERE valid <> 0) \
     GROUP BY creditor, debtor \
-    ORDER BY sum(amount)`,
+    HAVING sum(amount) <> 0 \
+    ORDER BY sum(amount) DESC`,
 		function(err, rows){
 			if (err){
 				console.log(err);
