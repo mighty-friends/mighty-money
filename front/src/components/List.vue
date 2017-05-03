@@ -20,6 +20,7 @@
         <table class="table is-striped" >
           <thead>
             <tr>
+              <th> 수정 </th>
               <th> 날짜 </th>
               <th> 채권자 </th>
               <th> 채무자 </th>
@@ -29,7 +30,7 @@
           </thead>
           <tfoot>
             <tr>
-              <th colspan="5" style="text-align:center">
+              <th colspan="6" style="text-align:center">
                 현재 날짜 : {{ new Date().toISOString().slice(0,10) }}
               </th>
             </tr>
@@ -43,6 +44,13 @@
                   'invalid': !ts.valid,
                   'is-credit': ts.amount > 0,
                   'is-debt': ts.amount < 0}">
+              <td <td :class="{'invaild': ts.valid}">
+                <a class="button is-primary" id="copy" v-on:click="changeValid(ts)"> 
+                  <span class="icon is-small">
+                    <i class="fa fa-wrench"></i>
+                  </span>
+                </a>
+              </td>
               <td> {{ ts.time }} </td>
               <td> {{ ts.creditor }} </td>
               <td> {{ ts.debtor }} </td>
@@ -71,6 +79,20 @@ export default {
       return this.name === '모두' ||
         trans.creditor === this.name ||
         trans.debtor === this.name
+    },
+    changeValid: function (trans) {
+      if (confirm(trans.valid ? '거래를 취소하겠습니까?' : '거래를 복구하겠습니까?')) {
+        let newvaild = 1 - trans.valid
+        let url = '/api/trans?id=' + trans.id + '&valid=' + newvaild
+        this.$http.put(url)
+          .then(function (response) {
+            trans.valid = newvaild
+          })
+          .catch(function (error) {
+            console.log(error)
+            alert((trans.vaild ? '거래 취소에 실패했습니다.' : '거래 복구에 실패했습니다.') + '개발자에게 문의해주세요.')
+          })
+      }
     }
   },
   beforeMount: function () {
@@ -81,7 +103,7 @@ export default {
       })
       .catch(function (error) {
         console.log(error)
-        alert('인터넷 연결 상태가 좋지 않거나, 데이터베이스에 문제가 생겼습니다. 개발자에게 문의해주세요')
+        alert('인터넷 연결 상태가 좋지 않거나, 데이터베이스에 문제가 생겼습니다. 개발자에게 문의해주세요.')
       })
   },
   filters: {
