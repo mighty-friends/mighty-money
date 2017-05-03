@@ -108,5 +108,6 @@ api.get('/api/credit', function(req, res){
 });
 
 api.use(express.static('public'))
+api.use(/\/(list|won|mine)/, express.static('public'))
 api.listen(80)
 console.log('Submit GET or POST to http://localhost:80')
