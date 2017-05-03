@@ -44,7 +44,7 @@
                   'invalid': !ts.valid,
                   'is-credit': ts.amount > 0,
                   'is-debt': ts.amount < 0}">
-              <td <td :class="{'invaild': ts.valid}">
+              <td>
                 <a class="button is-primary" id="copy" v-on:click="changeValid(ts)"> 
                   <span class="icon is-small">
                     <i class="fa fa-wrench"></i>

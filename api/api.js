@@ -2,35 +2,58 @@ var express = require('express')
 var api = express()
 
 var sqlite3 = require('sqlite3').verbose()
-var db = new sqlite3.Database(':memory:')
+var db = new sqlite3.Database('db.sqlite3')
 
-db.serialize(function () {
-  db.run(`CREATE TABLE IF NOT EXISTS liablity \
-    (id INTEGER PRIMARY KEY AUTOINCREMENT, \
-      creditor TEXT NOT NULL, \
-      debtor TEXT NOT NULL, \
-      amount INTEGER NOT NULL, \
-      description TEXT, \
-      time INT, \
-      valid INT)`)
+db.run(`CREATE TABLE IF NOT EXISTS liablity \
+  (id INTEGER PRIMARY KEY AUTOINCREMENT, \
+    creditor TEXT NOT NULL, \
+    debtor TEXT NOT NULL, \
+    amount INTEGER NOT NULL, \
+    description TEXT, \
+    time INT, \
+    valid INT)`)
 
-  const createTrans = (c, d, a, desc = '') =>
-    db.run(`INSERT INTO liablity \
-      (creditor, debtor, amount, description, time, valid) \
-      VALUES (?, ?, ?, ?, date('now'), 1)`,
-      c, d, a, desc)
-
-  createTrans('위재원', '김유진', 1000, '데리야끼 호텔')
-  createTrans('강명진', '김유진', -2000, '성실관 콜라')
-  createTrans('강명진', '위재원', 8500, '마쯔미')
-  createTrans('강명진', '이정재', 4500, '싸이')
-})
+api.route('/api/admin')
+  .get(function (req, res) {
+    db.all(
+      `SELECT * FROM liablity \
+      ORDER BY time, id`,
+      function (err, rows) {
+        if (err) {
+          console.log(err)
+          res.status(500)
+          res.end()
+        }
+        res.send(rows)
+      }
+    )
+  })
+  .post(function (req, res) {
+    try{
+      JSON.parse(req.query.data)
+        .forEach( function (t) {
+          db.run(`INSERT INTO liablity \
+            (creditor, debtor, amount, description, time, valid) \
+              VALUES (?, ?, ?, ?, ?, ?)`,
+            t.creditor, t.debtor, t.amount, t.description, t.time, t.valid)
+        }
+      )
+    } catch(err) {
+      console.log(err)
+      res.status(500)
+      res.end()
+      return 
+    } finally {
+      res.status(202)
+      res.end()
+    }
+  })
 
 api.route('/api/trans')
   .get(function (req, res) {
     db.all(
       `SELECT * FROM liablity \
-      ORDER BY id DESC`,
+      ORDER BY time DESC, id DESC`,
       function (err, rows) {
         if (err) {
           console.log(err)
@@ -81,7 +104,8 @@ api.route('/api/trans')
     )
   })
 
-api.get('/api/credit', function(req, res){
+api.route('/api/credit')
+  .get(function(req, res){
     db.all(
 		`SELECT creditor, debtor, sum(amount) as amount \
     FROM \
@@ -104,8 +128,8 @@ api.get('/api/credit', function(req, res){
 				res.send(rows)
 			}
 		}
-	);
-});
+	)
+})
 
 api.use(express.static('public'))
 api.use(/\/(list|won|mine)/, express.static('public'))

@@ -114,6 +114,7 @@ export default {
           .map(e => e.creditor + '<' + e.debtor + format(e.amount))
       } else {
         creditL = this.credit
+          .filter(e => e.amount > 0)
           .filter(e => e.creditor === name)
           .map(e => e.debtor + format(e.amount))
       }
