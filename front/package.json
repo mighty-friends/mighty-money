@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.16.1",
     "clipboard": "^1.6.1",
+    "kr-postposition": "^2.0.6",
     "vue": "^2.2.6",
     "vue-router": "^2.3.1"
   },

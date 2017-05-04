@@ -18,7 +18,7 @@
     <div class="columns">
       <div class="column is-8 is-offset-2">
         <table class="table is-striped" >
-          <thead>
+          <thead class="is-hidden-mobile">
             <tr>
               <th> 수정 </th>
               <th> 날짜 </th>
@@ -44,18 +44,24 @@
                   'invalid': !ts.valid,
                   'is-credit': ts.amount > 0,
                   'is-debt': ts.amount < 0}">
-              <td>
-                <a class="button is-primary" id="copy" v-on:click="changeValid(ts)"> 
+              <td class="is-hidden-mobile">
+                <a class="button is-primary" id="copy" v-on:click="changeValid(ts)">
                   <span class="icon is-small">
                     <i class="fa fa-wrench"></i>
                   </span>
                 </a>
               </td>
-              <td> {{ ts.time }} </td>
-              <td> {{ ts.creditor }} </td>
-              <td> {{ ts.debtor }} </td>
-              <td> {{ ts.description }} </td>
-              <td class="amount" style="text-align:right"> {{ ts.amount | formatAmount }} </td>
+              <td class="is-hidden-mobile"> {{ ts.time }} </td>
+              <td class="is-hidden-mobile"> {{ ts.creditor }} </td>
+              <td class="is-hidden-mobile"> {{ ts.debtor }} </td>
+              <td class="is-hidden-mobile"> {{ ts.description }} </td>
+              <td class="amount is-hidden-mobile" style="text-align:right"> {{ ts.amount | formatAmount }} </td>
+              <td colspan="5" class="is-hidden-tablet" style="padding-left:0;padding-right:0">
+                <p class="is-small content" style="margin-bottom:0"> {{ts.time}} </p>
+                {{merge(ts.creditor, '가')}}
+                {{ts.debtor}}에게 {{ts.amount | formatAmount}} 빌려줌 <br>
+                <p class="is-small content">{{ts.description}}</p>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -65,6 +71,7 @@
 </template>
 
 <script>
+import postpos from 'kr-postposition'
 export default {
   name: 'list',
   props: ['people'],
@@ -75,6 +82,9 @@ export default {
     }
   },
   methods: {
+    merge: function (name, postposition) {
+      return postpos.merge(name, postposition)
+    },
     related: function (trans) {
       return this.name === '모두' ||
         trans.creditor === this.name ||
